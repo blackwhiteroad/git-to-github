@@ -1,0 +1,213 @@
+***Centos7-->git-->github操作:
+**配置用户信息
+[root@room9pc01 ~]# yum -y install git
+[root@room9pc01 ~]# git config --global user.name "blackwhiteroad"
+[root@room9pc01 ~]# git config --global user.email "1107906657@qq.com"
+[root@room9pc01 ~]# git config --list
+credential.helper=store
+user.name=blackwhiteroad
+user.email=1107906657@qq.com
+**创建SSH key并匹配linux平台与github账户的密钥配对，githbu可同时配对多台linux平台的密钥
+1.上传到github
+1>使用如下命令来生成rsa公钥
+[root@room9pc01 gitToGithub]# ssh-keygen -t rsa -C "1107906657@qq.com"
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa): cangqiong	//可为空
+Enter passphrase (empty for no passphrase): 	//可为空
+Enter same passphrase again: 	//可为空
+Your identification has been saved in cangqiong.
+Your public key has been saved in cangqiong.pub.
+The key fingerprint is:
+SHA256:nxVvtoe5TNSUgT1HsN9WC2o8BGVyf6/rn9wa1XScN7o 1107906657@qq.com
+The key's randomart image is:
++---[RSA 2048]----+
+|         o.+  ++.|
+|          = .. ==|
+|           ..o.=X|
+|          o .o+=X|
+|        S  =..=.O|
+|         ..o.+.B |
+|          o  EB .|
+|             o.=o|
+|             .*=o|
++----[SHA256]-----+
+[root@room9pc01 gitToGithub]# ls
+cangqiong  cangqiong.pub  test.txt
+2>进入存放目录，打开id_rsa.pub文件，复制里面的内容，一般是以ssh-rsa开头
+[root@room9pc01 ~]# cd /root/.ssh/
+[root@room9pc01 .ssh]# ls
+authorized_keys  id_rsa  id_rsa.pub  known_hosts
+[root@room9pc01 .ssh]# cat id_rsa.pub 
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCv3uPUOnpaaE9/l5jkUEp5K3ZsP3dgrRfkJur5UkmPvgGoz4UGV4vd2Dna1R6En2mmTDEwFyqmpJs59Hgfw8rTF8EbDRepJ7N4+mm3sUYnFy9BJgafJkK84ZdQ1yA/A64LzVg02PwHqmSO5eLnAtWmeToIlDvyowaZou6YJqSdYflJDTu6793PshxhwdTFyK1NqIS4mfHHpWgm/oObXRCmqbvB4EiACuasvXN46JKTpa0COezdjUKDmyVspSMFdN7jpEuWZPMPSnOyv/FDSYjEbqoZpiIQMSRBVDbNsz7E+mViP1yDi5nJ/9nmbIZLgbykEU0gEOAxKSZXvjbDXn2p root@weekend9pc01.tedu.cn
+2.打开github，注册/登录自己的账号
+1>在账户设置里面，找到SSH and GPG keys设置，点击New SSH key，将之前复制的公钥加进去就ok
+备注:粘贴如下内容:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCv3uPUOnpaaE9/l5jkUEp5K3ZsP3dgrRfkJur5UkmPvgGoz4UGV4vd2Dna1R6En2mmTDEwFyqmpJs59Hgfw8rTF8EbDRepJ7N4+mm3sUYnFy9BJgafJkK84ZdQ1yA/A64LzVg02PwHqmSO5eLnAtWmeToIlDvyowaZou6YJqSdYflJDTu6793PshxhwdTFyK1NqIS4mfHHpWgm/oObXRCmqbvB4EiACuasvXN46JKTpa0COezdjUKDmyVspSMFdN7jpEuWZPMPSnOyv/FDSYjEbqoZpiIQMSRBVDbNsz7E+mViP1yDi5nJ/9nmbIZLgbykEU0gEOAxKSZXvjbDXn2p
+补充:
+如果提示ssh: Could not resolve hostname \342\200\223t: Name or service not known
+解决办法：
+ssh -t -p 22 git@github.com （-p表示修改服务器端口为22）
+当提示输入(yes/no)?时在后面输入yes回车即可
+当看到欢迎语Hi oldinaction! You've successfully authenticated, but GitHub does not provide shell access.则表示链接成功。
+2>进入到要提交文件所在目录，git remote add origin 
+[root@room9pc01 ~]# ssh-keygen -t rsa -C "1107906657@qq.com"	//执行完此步骤后进行上一行的操作
+*为了保证ssh-keygen的正常使用，最好执行如下两个步骤
+[root@room9pc01 ~]# vim /etc/hosts
+#13.250.177.223  github.com	//增加此行内容
+[root@room9pc01 ~]# chmod 0600 /root/.ssh/id_rsa
+[root@room9pc01 ~]# ssh -T git@github.com
+Hi blackwhiteroad! You've successfully authenticated, but GitHub does not provide shell access.
+
+***git仓库
+**初始化版本库:git init
+[root@room9pc01 ~]# cd /root/qun
+*本地上传github仓库
+注释:github账户上创建一个仓库，不初始化仓库
+[root@room9pc01 qun]# echo "# BASIC" >> README.md
+[root@room9pc01 qun]# git init
+初始化空的 Git 版本库于 /root/qun/.git/
+**添加文件到版本库:git add,git commit
+[root@room9pc01 qun]# git add README.md
+[root@room9pc01 qun]# git commit -m "first commit"
+[master（根提交） 87cd48e] first commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+**查看仓库状态:git status
+[root@room9pc01 qun]# git status
+# 位于分支 master
+# 您的分支领先 'origin/master' 共 1 个提交。
+#   （使用 "git push" 来发布您的本地提交）
+#
+无文件要提交，干净的工作区
+[root@room9pc01 qun]# git push -u origin master
+Counting objects: 3, done.
+Writing objects: 100% (3/3), 220 bytes | 0 bytes/s, done.
+Total 3 (delta 0), reused 0 (delta 0)
+To https://github.com/blackwhiteroad/BASIC.git
+ * [new branch]      master -> master
+分支 master 设置为跟踪来自 origin 的远程分支 master。
+*追加文件内容
+[root@room9pc01 qun]# echo "good" >> README.md 
+[root@room9pc01 qun]# git add README.md 
+[root@room9pc01 qun]# git commit -m "modify README.md"
+[master f0b820c] modify README.md
+ 1 file changed, 1 insertion(+)
+[root@room9pc01 qun]# git push -u origin master
+Counting objects: 5, done.
+Writing objects: 100% (3/3), 265 bytes | 0 bytes/s, done.
+Total 3 (delta 0), reused 0 (delta 0)
+To https://github.com/blackwhiteroad/BASIC.git
+   87cd48e..f0b820c  master -> master
+分支 master 设置为跟踪来自 origin 的远程分支 master。
+[root@room9pc01 qun]# cp /root/git工作流.png .
+*上传图片
+[root@room9pc01 qun]# git add git工作流.png 
+[root@room9pc01 qun]# git status
+# 位于分支 master
+# 要提交的变更：
+#   （使用 "git reset HEAD <file>..." 撤出暂存区）
+#
+#	新文件：    "git\345\267\245\344\275\234\346\265\201.png"
+#
+[root@room9pc01 qun]# git commit -m "add git工作流"
+[master ff094f8] add git工作流
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 "git\345\267\245\344\275\234\346\265\201.png"
+[root@room9pc01 qun]# git status
+# 位于分支 master
+# 您的分支领先 'origin/master' 共 1 个提交。
+#   （使用 "git push" 来发布您的本地提交）
+#
+无文件要提交，干净的工作区
+[root@room9pc01 qun]# git push -u origin master
+Counting objects: 4, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 145.15 KiB | 0 bytes/s, done.
+Total 3 (delta 0), reused 0 (delta 0)
+To https://github.com/blackwhiteroad/BASIC.git
+   0c5ba0d..ff094f8  master -> master
+分支 master 设置为跟踪来自 origin 的远程分支 master。
+*回退上一次版本信息
+[root@room9pc01 qun]# git reset HEAD README.md
+[root@room9pc01 qun]# git checkout -- README.md
+*回退历史版本信息
+[root@room9pc01 qun]# git log	//获取历史版本信息
+[root@room9pc01 qun]# git reset --hard 97f586f8901e6532d14f9d39eb85e5809d6c5b2f
+*清空仓库
+[root@room9pc01 qun]# git rm README.md 
+[root@room9pc01 qun]# git status
+[root@room9pc01 qun]# git commit -m "clean beauty"
+[root@room9pc01 qun]# git status
+
+**克隆远程仓库到本地进行管理
+*首先在github账户上新建一个仓库advance,不初始化处理
+[root@room9pc01 qun]# mkdir advance
+[root@room9pc01 advance]# cd advance/
+[root@room9pc01 advance]# git clone https://github.com/blackwhiteroad/advance.git
+[root@room9pc01 advance]# git status
+[root@room9pc01 advance]# cd advance/
+[root@room9pc01 advance]# git status
+[root@room9pc01 advance]# echo "进阶" > advance.html
+[root@room9pc01 advance]# git add advance.html 
+[root@room9pc01 advance]# ls -al
+[root@room9pc01 advance]# git commit -m "学习进阶"
+[root@room9pc01 advance]# git push -u origin master
+
+**标签管理
+*查看所有标签-git tag
+*创建标签-git tag name
+[root@room9pc01 advance]# echo "best" >> advance.html 
+[root@room9pc01 advance]# git tag v1.0.1
+*指定提交信息-git tag -a name -m "comment"
+[root@room9pc01 advance]# git tag v1.0.1 -m "advace.html v1.0.1"
+*删除标签-git tag -d name
+[root@room9pc01 advance]# git tag -d v1.0.1
+*标签发布-git push origin name 
+[root@room9pc01 advance]# git push origin v1.0.1
+
+**分支管理
+*新建分支
+[root@room9pc01 advance]# git branch feature_x
+*查看主，分支状态
+[root@room9pc01 advance]# git branch
+*切换到分支状态
+[root@room9pc01 advance]# git checkout feature_x
+*查看主，分支状态
+[root@room9pc01 advance]# git branch
+*分支状态下创建文件
+*查看主，分支状态echo "new feature added" >> branch.txt
+*提交文件信息
+[root@room9pc01 advance]# git add branch.txt
+[root@room9pc01 advance]# commit -m "new feature add"
+*查看状态
+[root@room9pc01 advance]# git status
+*切换到主节点
+[root@room9pc01 advance]# git checkout master
+[root@room9pc01 advance]# git status
+*合并代码
+[root@room9pc01 advance]# git merge feature_x
+*查看主，分支状态
+[root@room9pc01 advance]# git branch
+*删除分支状态下的节点信息
+[root@room9pc01 advance]# git branch -d feature_x
+
+
+A.Knowledge:
+git 是分布式版本控制系统（Distributed Version Control System，简称 DVCS），它可以备份文件的历史信息，多个终端可以同时对文件作修改。
+文件内容如果有了变化和之前的不同了，那么可以说，此时的文件不同于彼时的文件，不同的文件通过相关运算理论上会得到一个唯一标识，给所有文件建立唯一标识，就可以指向不同文件。 git 通过这个唯一标识指示文件的变化。
+
+**工作流:工作区      -->    暂存区   -->版本库
+**初始化:git init-->git add-->git commit
+**远程仓库:git remote add-->git pull-->git push-->git clone
+**分支管理:git branch-->git checkout-->git merge
+**标签管理:git tag-->git push
+
+
+
+
+
+
+
+
+
+

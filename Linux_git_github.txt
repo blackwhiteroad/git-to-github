@@ -220,3 +220,4 @@ error: 无法推送一些引用到 'git@192.168.3.193:root/project_one.git'
 ]# gpom		//推送至gitlab/github仓库
 
 推送github出现帐号,密码报错解决办法:https://www.jianshu.com/p/05c1378baffd?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation
+强制找回GitLab管理员账户密码的方法<--->https://blog.csdn.net/bisal/article/details/54672184
